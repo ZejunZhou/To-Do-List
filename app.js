@@ -1,39 +1,37 @@
 const express = require("express");
 const body_parser = require("body-parser");
-const { request } = require("http");
+const { request } = require("express");
+//const { request } = require("http");
 const app = express();
+app.use(body_parser.urlencoded({ extended: true }));
+
 // app use ejs as view engine
 app.set("view engine", "ejs");
-
 app.listen("3000");
+app.use(express.static(__dirname + "/public"))
+
+// create a dynamic array for storing item
+let items = ["Buy Grocery", "Go to School"]
+
 app.get("/", (request, response) =>{
-    var date = new Date();
-    day_number = date.getDay();
+    let date = new Date();
+    //create a object to render today's date
+    let options = {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+    };
 
-    day = calculate_day(day_number);
-
-
-    response.render("index", {"days":day})
+    var day = date.toLocaleDateString("en-US", options);
+    response.render("index", {"days":day, "items":items})
 }) 
-console.log("app ls listen on port 3000")
+// callback function when recieve the post request from the form
+app.post("/", (request, response) =>{
+    let newItem = request.body.newItem;
+    items.push(newItem);
+    /**when we receive the post request from the form
+    we save the variable newItem and redirect to the home route
+    Otherwise, there can be a issue when response render **/
+    response.redirect("/")
+})
 
-const calculate_day = (day_number) => {
-    switch (day_number){
-        case 0:
-            return "Sunday";
-        case 1:
-            return "Monday";
-        case 2:
-            return "Tuesday";
-        case 3:
-            return "Wednesday";
-        case 4:
-            return "Thursday";
-        case 5:
-            return "Friday";
-        case 6:
-            return "Saturday";
-        default:
-            return "Invalid date due to error"
-    }
-}
