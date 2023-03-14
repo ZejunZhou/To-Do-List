@@ -9,20 +9,20 @@
 </head>
 <body>
     <div class="box" id="heading">
-        <h1>Today is <%=days%> !</h1>
+        <h1><%=title%></h1>
     </div>
 
     <div class="box">
         <% for(var i =0; i<items.length; i++){ %>
         <div class="item">
             <input type="checkbox">
-            <p><%= items[i] %></p>
+            <p><%= items[i].name %></p>
         </div>
         <% } %>
 
         <form action="/" method="post" class="item">
             <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
-            <button type="submit" name="button">+</button>
+            <button type="submit" name="button" value=<%=postType%>> +</button>
         </form>
 
     </div>
