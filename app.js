@@ -52,7 +52,7 @@ app.get("/", (request, response) =>{
     
     Item_Model.find()
     .then((docs) => {
-        
+
         let date = new Date();
         let options = {
             weekday: "long",
@@ -72,29 +72,43 @@ app.get("/", (request, response) =>{
 // callback function when recieve the post request from the form
 app.post("/", (request, response) =>{
     // case1: when button's value is work, render at /Worklist
-    if (request.body.button == "work"){
-       let newItem = request.body.newItem;
-       workItem.push(newItem);
-       response.redirect("/Worklist");
+    // if (request.body.button == "work"){
+    //    let newItem = request.body.newItem;
+    //    workItem.push(newItem);
+    //    response.redirect("/Worklist");
 
     // caes2: home case, redner at / 
-    }else{
-        let newItem = request.body.newItem;
-        const Item_Insert = new Item_Model({
-            name: newItem
-        })
+   
+    let newItem = request.body.newItem;
+    const Item_Insert = new Item_Model({
+        name: newItem
+    })
 
-        Item_Insert.save()
+    Item_Insert.save()
+    .catch((err) => {
+        
+    })
 
         //items.push(newItem);
         /**when we receive the post request from the form
         we save the variable newItem and redirect to the home route
         Otherwise, there can be a issue when response render **/
-        response.redirect("/")
-    }
+    response.redirect("/")
 })
 
-/**Render to Worklist */
-app.get("/Worklist", (request, response) =>{
-    response.render("index", {"title":"Work List", "items":workItem, "postType": "work"});
+
+/**Callback function to implement checkbox delete */
+app.post("/delete", (request, response) =>{
+   const checkedItemId = request.body.checkbox;
+   Item_Model.findByIdAndRemove(checkedItemId)
+   .then((docs) => {
+        //console.log("successfully remove " + docs)
+        response.redirect("/")
+   })
+   .catch((err) => {
+        console.log("something wrong happened")
+   })
+
 })
+
+
